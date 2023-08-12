@@ -9,6 +9,7 @@ let pageSize = 200
 async function createDbPath () {
   try {
     await mkdir(DB_PATH)
+    console.log('This is the DB path: ', DB_PATH)
   } catch (err) {
     console.log(err)
   }
@@ -33,6 +34,7 @@ async function createDir (dirName) {
 }
 
 async function getEvents () {
+  console.log('Getting events')
   let events = []
   const filePath = await createDir('Events/')
   try {
@@ -40,7 +42,6 @@ async function getEvents () {
       await fetch(`https://zsr.octane.gg/events?page=${page}&perPage=200`, headers)
         .then(response => response.json())
         .then(data => {
-          console.log(data)
           console.log('Page: ', page)
           pageSize = data.pageSize
           events = events.concat(data)
@@ -51,8 +52,32 @@ async function getEvents () {
     console.log(err)
   }
   await writeFile(`${filePath}events.json`, JSON.stringify(events, null, 2), 'utf-8')
+  console.log('Finished get events')
 }
+
+async function getMatches () {
+  console.log('Getting matches')
+  let matches = []
+  const filePath = await createDir('Matches/')
+  try {
+    while (pageSize === 200) {
+      await fetch(`https://zsr.octane.gg/matches?page=${page}&perPage=200`, headers)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Page: ', page)
+          pageSize = data.pageSize
+          matches = matches.concat(data)
+          page += 1
+        })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  await writeFile(`${filePath}matches.json`, JSON.stringify(matches, null, 2), 'utf-8')
+  console.log('Finished get matches')
+}
+
 await removeDir()
 await createDbPath()
-console.log('This is the DB path: ', DB_PATH)
 await getEvents()
+await getMatches()
