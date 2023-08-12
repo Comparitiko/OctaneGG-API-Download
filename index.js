@@ -3,8 +3,6 @@ import path from 'node:path'
 
 const headers = { 'User-Agent': 'OctaneGG-API-Download' }
 const DB_PATH = path.join(process.cwd(), './database/')
-let page = 1
-let pageSize = 200
 
 async function createDbPath () {
   try {
@@ -34,7 +32,9 @@ async function createDir (dirName) {
 }
 
 async function getEvents () {
-  console.log('Getting events')
+  console.log('📩 Getting events 📩')
+  let page = 1
+  let pageSize = 200
   let events = []
   const filePath = await createDir('Events/')
   try {
@@ -52,11 +52,13 @@ async function getEvents () {
     console.log(err)
   }
   await writeFile(`${filePath}events.json`, JSON.stringify(events, null, 2), 'utf-8')
-  console.log('Finished get events')
+  console.log('✔️ Finished get events ✔️')
 }
 
 async function getMatches () {
-  console.log('Getting matches')
+  console.log('📩 Getting matches 📩')
+  let page = 1
+  let pageSize = 200
   let matches = []
   const filePath = await createDir('Matches/')
   try {
@@ -74,11 +76,13 @@ async function getMatches () {
     console.log(err)
   }
   await writeFile(`${filePath}matches.json`, JSON.stringify(matches, null, 2), 'utf-8')
-  console.log('Finished get matches')
+  console.log('✔️ Finished get matches ✔️')
 }
 
 async function getGames () {
-  console.log('Getting games')
+  console.log('📩 Getting games 📩')
+  let page = 1
+  let pageSize = 200
   let games = []
   const filePath = await createDir('Games/')
   try {
@@ -96,7 +100,31 @@ async function getGames () {
     console.log(err)
   }
   await writeFile(`${filePath}games.json`, JSON.stringify(games, null, 2), 'utf-8')
-  console.log('Finished get games')
+  console.log('✔️ Finished get games ✔️')
+}
+
+async function getPlayers () {
+  console.log('📩 Getting players 📩')
+  let page = 1
+  let pageSize = 200
+  let players = []
+  const filePath = await createDir('Players/')
+  try {
+    while (pageSize === 200) {
+      await fetch(`https://zsr.octane.gg/players?page=${page}&perPage=200`, headers)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Page: ', page)
+          pageSize = data.pageSize
+          players = players.concat(data)
+          page += 1
+        })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  await writeFile(`${filePath}players.json`, JSON.stringify(players, null, 2), 'utf-8')
+  console.log('✔️ Finished get players ✔️')
 }
 
 await removeDir()
@@ -104,3 +132,4 @@ await createDbPath()
 await getEvents()
 await getMatches()
 await getGames()
+await getPlayers()
