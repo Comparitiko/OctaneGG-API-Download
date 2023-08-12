@@ -133,9 +133,34 @@ async function getPlayers () {
   console.log('✔️ Finished get players ✔️')
 }
 
+async function getTeams () {
+  console.log('📩 Getting teams 📩')
+  let page = 1
+  let pageSize = 500
+  const filePath = await createDir('Teams/')
+  while (pageSize === 500) {
+    try {
+      await fetch(`https://zsr.octane.gg/teams?page=${page}&perPage=500`, headers)
+        .then(response => response.json())
+        .then(async data => {
+          console.log('Page: ', page)
+          pageSize = data.pageSize
+          page += 1
+          await sleep(2000)
+          if (page === 1) await writeFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
+          await appendFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  console.log('✔️ Finished get players ✔️')
+}
+
 await removeDir()
 await createDbPath()
 await getEvents()
 await getMatches()
 await getGames()
 await getPlayers()
+await getTeams()
