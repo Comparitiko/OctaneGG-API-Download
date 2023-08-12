@@ -1,4 +1,4 @@
-import { writeFile, mkdir, rmdir } from 'node:fs/promises'
+import { writeFile, mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 
 const baseURL = 'https://zsr.octane.gg/'
@@ -11,6 +11,10 @@ async function createDir () {
   const DB_PATH = path.join(process.cwd(), './database')
   await mkdir(DB_PATH)
   return DB_PATH
+}
+
+async function removeDir () {
+  await rm(DB_PATH, { force: true, recursive: true })
 }
 
 async function getEvents () {
@@ -32,3 +36,4 @@ async function getEvents () {
 const DB_PATH = await createDir()
 console.log(DB_PATH)
 // await getEvents()
+await removeDir()
