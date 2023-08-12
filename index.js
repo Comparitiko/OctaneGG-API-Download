@@ -77,7 +77,30 @@ async function getMatches () {
   console.log('Finished get matches')
 }
 
+async function getGames () {
+  console.log('Getting games')
+  let games = []
+  const filePath = await createDir('Games/')
+  try {
+    while (pageSize === 200) {
+      await fetch(`https://zsr.octane.gg/games?page=${page}&perPage=200`, headers)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Page: ', page)
+          pageSize = data.pageSize
+          games = games.concat(data)
+          page += 1
+        })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  await writeFile(`${filePath}games.json`, JSON.stringify(games, null, 2), 'utf-8')
+  console.log('Finished get games')
+}
+
 await removeDir()
 await createDbPath()
 await getEvents()
 await getMatches()
+await getGames()
