@@ -32,7 +32,6 @@ async function createDir (dirName) {
 }
 
 async function sleep (ms) {
-  console.log('Sleeping 3 seconds')
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
@@ -51,7 +50,7 @@ async function getEvents () {
           pageSize = data.pageSize
           events = events.concat(data)
           page += 1
-          await sleep(5000)
+          await sleep(2000)
         })
     }
   } catch (err) {
@@ -77,7 +76,7 @@ async function getMatches () {
           if (page === 1) await writeFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
           await appendFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
           page += 1
-          await sleep(5000)
+          await sleep(2000)
         })
     }
   } catch (err) {
@@ -99,9 +98,8 @@ async function getGames () {
           console.log('Page: ', page)
           pageSize = data.pageSize
           console.log(pageSize)
-          if (page === 1) await writeFile(`${filePath}games-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
-          await appendFile(`${filePath}games-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
-          await sleep(5000)
+          await writeFile(`${filePath}games-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
+          // await sleep(2000)
           page += 1
         })
     }
@@ -115,30 +113,29 @@ async function getPlayers () {
   console.log('📩 Getting players 📩')
   let page = 1
   let pageSize = 500
-  let players = []
   const filePath = await createDir('Players/')
-  try {
-    while (pageSize === 500) {
+  while (pageSize === 500) {
+    try {
       await fetch(`https://zsr.octane.gg/players?page=${page}&perPage=500`, headers)
         .then(response => response.json())
         .then(async data => {
           console.log('Page: ', page)
           pageSize = data.pageSize
-          players = players.concat(data)
           page += 1
-          await sleep(5000)
+          await sleep(2000)
+          if (page === 1) await writeFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
+          await appendFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
         })
+    } catch (err) {
+      console.log(err)
     }
-  } catch (err) {
-    console.log(err)
   }
-  await writeFile(`${filePath}players.json`, JSON.stringify(players, null, 2), 'utf-8')
   console.log('✔️ Finished get players ✔️')
 }
 
 await removeDir()
 await createDbPath()
-// await getEvents()
-// await getMatches()
+await getEvents()
+await getMatches()
 await getGames()
-// await getPlayers()
+await getPlayers()
