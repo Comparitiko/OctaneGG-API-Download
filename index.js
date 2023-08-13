@@ -154,13 +154,13 @@ async function getTeams () {
       console.log(err)
     }
   }
-  console.log('✔️ Finished get players ✔️')
+  console.log('✔️ Finished get teams ✔️')
 }
 
 await removeDir()
 await createDbPath()
-await getEvents()
-await getMatches()
-await getGames()
-await getPlayers()
+// await getEvents()
+// await getMatches()
+// await getGames()
+// await getPlayers()
 await getTeams()
