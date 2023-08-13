@@ -86,12 +86,12 @@ async function getMatches () {
       pageSize = data.pageSize
       await sleep(250)
       matches = matches.concat(data)
+      await writeFile(`${filePath}matches-${page}.json`, JSON.stringify(matches, null, 2), 'utf-8')
       page += 1
     }
   } catch (err) {
     console.log(err)
   }
-  await writeFile(`${filePath}matches.json`, JSON.stringify(matches, null, 2), 'utf-8')
   console.log('✔️ Finished get matches ✔️')
 }
 
@@ -246,7 +246,7 @@ async function getTeamStats () {
   }
 }
 
-console.log('⌛ Getting data ⌛')
+console.log('⌛ Getting all data ⌛')
 
 await removeDir()
 await createDbPath()
