@@ -77,7 +77,6 @@ async function getMatches () {
   console.log('📩 Getting matches 📩')
   let page = 1
   let pageSize = 500
-  let matches = []
   const filePath = await createDir('Matches/')
   try {
     while (pageSize === 500) {
@@ -85,8 +84,7 @@ async function getMatches () {
       console.log('Page: ', page)
       pageSize = data.pageSize
       await sleep(250)
-      matches = matches.concat(data)
-      await writeFile(`${filePath}matches-${page}.json`, JSON.stringify(matches, null, 2), 'utf-8')
+      await writeFile(`${filePath}matches-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
       page += 1
     }
   } catch (err) {
