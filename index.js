@@ -1,8 +1,93 @@
+import { readFile, readFileSync } from 'node:fs'
 import { appendFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 
 const headers = { 'User-Agent': 'OctaneGG-API-Download' }
 const DB_PATH = path.join(process.cwd(), './Database/')
+
+const playerStats = [
+  'score',
+  'goals',
+  'assists',
+  'saves',
+  'shots',
+  'shootingPercentage',
+  'goalParticipation',
+  'rating',
+  'bpm',
+  'bcpm',
+  'amountCollected',
+  'amountCollectedBig',
+  'amountCollectedSmall',
+  'amountStolen',
+  'amountStolenBig',
+  'amountStolenSmall',
+  'avgSpeed',
+  'avgSpeedPercentage',
+  'totalDistance',
+  'countPowerslide',
+  'timePowerslide',
+  'avgPowerslideDuration',
+  'avgDistanceToBall',
+  'avgDistanceToBallPossession',
+  'avgDistanceToBallNoPossession',
+  'avgDistanceToMates',
+  'timeSupersonicSpeed',
+  'timeBoostSpeed',
+  'timeSlowSpeed',
+  'percentSupersonicSpeed',
+  'percentBoostSpeed',
+  'percentSlowSpeed',
+  'timeGround',
+  'timeLowAir',
+  'timeHighAir',
+  'percentGround',
+  'percentLowAir',
+  'percentHighAir',
+  'countCollectedBig',
+  'countCollectedSmall',
+  'countStolenBig',
+  'countStolenSmall',
+  'amountOverfill',
+  'amountOverfillStolen',
+  'amountUsedWhileSupersonic',
+  'timeZeroBoost',
+  'timeBoost0To25',
+  'timeBoost25To50',
+  'timeBoost50To75',
+  'timeBoost75To100',
+  'timeFullBoost',
+  'percentZeroBoost',
+  'percentBoost0To25',
+  'percentBoost25To50',
+  'percentBoost50To75',
+  'percentBoost75To100',
+  'percentFullBoost',
+  'timeDefensiveThird',
+  'timeNeutralThird',
+  'timeOffensiveThird',
+  'timeDefensiveHalf',
+  'timeOffensiveHalf',
+  'timeMostBack',
+  'timeMostForward',
+  'percentDefensiveThird',
+  'percentNeutralThird',
+  'percentOffensiveThird',
+  'percentDefensiveHalf',
+  'percentOffensiveHalf',
+  'percentMostBack',
+  'percentMostForward',
+  'timeBehindBall',
+  'timeInfrontBall',
+  'timeClosestToBall',
+  'timeFarthestFromBall',
+  'percentBehindBall',
+  'percentInfrontBall',
+  'percentClosestToBall',
+  'percentFarthestFromBall',
+  'inflicted',
+  'taken'
+]
 
 async function createDbPath () {
   try {
@@ -25,9 +110,9 @@ async function createDir (dirName) {
   try {
     const filePath = `${DB_PATH}${dirName}`
     await mkdir(filePath)
-    return filePath
   } catch (err) {
-    console.log(err)
+    if (err.code === 'EEXIST') console.log('The path already exists')
+    console.log(err.code)
   }
 }
 
@@ -168,11 +253,22 @@ async function getActiveTeams () {
   console.log('✔️ Finished get active teams ✔️')
 }
 
-await removeDir()
+async function getPlayerStats () {
+  const playerData = await readFile(`${DB_PATH}Players/players.json`)
+  console.log(playerData)
+}
+
+async function getTeamStats () {
+
+}
+
+// await removeDir()
 await createDbPath()
-await getEvents()
-await getMatches()
-await getGames()
-await getPlayers()
-await getTeams()
-await getActiveTeams()
+// await getEvents()
+// await getMatches()
+// await getGames()
+// await getPlayers()
+// await getTeams()
+// await getActiveTeams()
+// await getPlayerStats()
+// await getTeamStats
