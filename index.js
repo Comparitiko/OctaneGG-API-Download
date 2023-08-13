@@ -1,5 +1,4 @@
-import { readFile, readFileSync } from 'node:fs'
-import { appendFile, writeFile, mkdir, rm } from 'node:fs/promises'
+import { appendFile, writeFile, mkdir, rm, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const headers = { 'User-Agent': 'OctaneGG-API-Download' }
@@ -111,6 +110,7 @@ async function createDir (dirName) {
   try {
     const filePath = `${DB_PATH}${dirName}`
     await mkdir(filePath)
+    return filePath
   } catch (err) {
     console.log(err)
   }
@@ -130,6 +130,7 @@ async function getEvents () {
   console.log('📩 Getting events 📩')
   let page = 1
   let pageSize = 500
+  let events = []
   const filePath = await createDir('Events/')
   try {
     while (pageSize === 500) {
@@ -137,13 +138,13 @@ async function getEvents () {
       console.log('Page: ', page)
       pageSize = data.pageSize
       page += 1
+      events = events.concat(data)
       await sleep(2000)
-      if (page === 1) await writeFile(`${filePath}events.json`, JSON.stringify(data, null, 2), 'utf-8')
-      else if (page !== 1) await appendFile(`${filePath}events.json`, JSON.stringify(data, null, 2), 'utf-8')
     }
   } catch (err) {
     console.log(err)
   }
+  await writeFile(`${filePath}events.json`, JSON.stringify(events, null, 2), 'utf-8')
   console.log('✔️ Finished get events ✔️')
 }
 
@@ -151,6 +152,7 @@ async function getMatches () {
   console.log('📩 Getting matches 📩')
   let page = 1
   let pageSize = 500
+  let matches = []
   const filePath = await createDir('Matches/')
   try {
     while (pageSize === 500) {
@@ -159,13 +161,13 @@ async function getMatches () {
       pageSize = data.pageSize
       console.log(pageSize)
       await sleep(2000)
-      if (page === 1) await writeFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
-      else if (page !== 1) await appendFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
+      matches = matches.concat(data)
       page += 1
     }
   } catch (err) {
     console.log(err)
   }
+  await writeFile(`${filePath}matches.json`, JSON.stringify(matches, null, 2), 'utf-8')
   console.log('✔️ Finished get matches ✔️')
 }
 
@@ -193,6 +195,7 @@ async function getPlayers () {
   console.log('📩 Getting players 📩')
   let page = 1
   let pageSize = 500
+  let players = []
   const filePath = await createDir('Players/')
   while (pageSize === 500) {
     try {
@@ -200,13 +203,13 @@ async function getPlayers () {
       console.log('Page: ', page)
       pageSize = data.pageSize
       page += 1
+      players = players.concat(data)
       await sleep(2000)
-      if (page === 1) await writeFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
-      else if (page !== 1) await appendFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
     } catch (err) {
       console.log(err)
     }
   }
+  await writeFile(`${filePath}players.json`, JSON.stringify(players, null, 2), 'utf-8')
   console.log('✔️ Finished get players ✔️')
 }
 
@@ -214,6 +217,7 @@ async function getTeams () {
   console.log('📩 Getting teams 📩')
   let page = 1
   let pageSize = 500
+  let teams = []
   const filePath = await createDir('Teams/')
   while (pageSize === 500) {
     try {
@@ -222,12 +226,12 @@ async function getTeams () {
       pageSize = data.pageSize
       page += 1
       await sleep(2000)
-      if (page === 1) await writeFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
-      else if (page !== 1) await appendFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
+      teams = teams.concat(data)
     } catch (err) {
       console.log(err)
     }
   }
+  await writeFile(`${filePath}teams.json`, JSON.stringify(teams, null, 2), 'utf-8')
   console.log('✔️ Finished get teams ✔️')
 }
 
@@ -235,6 +239,7 @@ async function getActiveTeams () {
   console.log('📩 Getting active teams 📩')
   let page = 1
   let pageSize = 500
+  let activeTeams = []
   const filePath = await createDir('ActiveTeams/')
   while (pageSize === 500) {
     try {
@@ -243,20 +248,19 @@ async function getActiveTeams () {
       pageSize = Object.keys(data.teams).length
       console.log(pageSize)
       page += 1
+      activeTeams = activeTeams.concat(data.teams)
       await sleep(2000)
-      if (page === 1) await writeFile(`${filePath}ActiveTeams.json`, JSON.stringify(data, null, 2), 'utf-8')
-      else if (page !== 1) await appendFile(`${filePath}ActiveTeams.json`, JSON.stringify(data, null, 2), 'utf-8')
     } catch (err) {
       console.log(err)
     }
   }
+  await writeFile(`${filePath}ActiveTeams.json`, JSON.stringify(activeTeams, null, 2), 'utf-8')
   console.log('✔️ Finished get active teams ✔️')
 }
 
 async function getPlayerStats () {
   try {
-    const playerData = await readFile(`${DB_PATH}Players/players.json`).then(JSON.parse)
-    console.log(playerData)
+    const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(JSON.parse)
   } catch (err) {
     console.log(err)
   }
@@ -275,4 +279,4 @@ await createDbPath()
 // await getTeams()
 // await getActiveTeams()
 await getPlayerStats()
-// await getTeamStats
+// await getTeamStats()
