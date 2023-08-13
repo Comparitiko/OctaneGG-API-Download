@@ -246,6 +246,8 @@ async function getTeamStats () {
   }
 }
 
+console.log('⌛ Getting data ⌛')
+
 await removeDir()
 await createDbPath()
 await getEvents()
