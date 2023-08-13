@@ -1,92 +1,9 @@
-import { appendFile, writeFile, mkdir, rm, readFile } from 'node:fs/promises'
+import { writeFile, mkdir, rm, readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { stats } from './utils/utils.js'
 
 const headers = { 'User-Agent': 'OctaneGG-API-Download' }
 const DB_PATH = path.join(process.cwd(), './Database/')
-
-const playerStats = [
-  'score',
-  'goals',
-  'assists',
-  'saves',
-  'shots',
-  'shootingPercentage',
-  'goalParticipation',
-  'rating',
-  'bpm',
-  'bcpm',
-  'amountCollected',
-  'amountCollectedBig',
-  'amountCollectedSmall',
-  'amountStolen',
-  'amountStolenBig',
-  'amountStolenSmall',
-  'avgSpeed',
-  'avgSpeedPercentage',
-  'totalDistance',
-  'countPowerslide',
-  'timePowerslide',
-  'avgPowerslideDuration',
-  'avgDistanceToBall',
-  'avgDistanceToBallPossession',
-  'avgDistanceToBallNoPossession',
-  'avgDistanceToMates',
-  'timeSupersonicSpeed',
-  'timeBoostSpeed',
-  'timeSlowSpeed',
-  'percentSupersonicSpeed',
-  'percentBoostSpeed',
-  'percentSlowSpeed',
-  'timeGround',
-  'timeLowAir',
-  'timeHighAir',
-  'percentGround',
-  'percentLowAir',
-  'percentHighAir',
-  'countCollectedBig',
-  'countCollectedSmall',
-  'countStolenBig',
-  'countStolenSmall',
-  'amountOverfill',
-  'amountOverfillStolen',
-  'amountUsedWhileSupersonic',
-  'timeZeroBoost',
-  'timeBoost0To25',
-  'timeBoost25To50',
-  'timeBoost50To75',
-  'timeBoost75To100',
-  'timeFullBoost',
-  'percentZeroBoost',
-  'percentBoost0To25',
-  'percentBoost25To50',
-  'percentBoost50To75',
-  'percentBoost75To100',
-  'percentFullBoost',
-  'timeDefensiveThird',
-  'timeNeutralThird',
-  'timeOffensiveThird',
-  'timeDefensiveHalf',
-  'timeOffensiveHalf',
-  'timeMostBack',
-  'timeMostForward',
-  'percentDefensiveThird',
-  'percentNeutralThird',
-  'percentOffensiveThird',
-  'percentDefensiveHalf',
-  'percentOffensiveHalf',
-  'percentMostBack',
-  'percentMostForward',
-  'timeBehindBall',
-  'timeInfrontBall',
-  'timeClosestToBall',
-  'timeFarthestFromBall',
-  'percentBehindBall',
-  'percentInfrontBall',
-  'percentClosestToBall',
-  'percentFarthestFromBall',
-  'inflicted',
-  'taken'
-]
 
 async function createDbPath () {
   try {
@@ -112,6 +29,7 @@ async function createDir (dirName) {
     await mkdir(filePath)
     return filePath
   } catch (err) {
+    if (err.code === 'EEXIST') return
     console.log(err)
   }
 }
@@ -260,23 +178,71 @@ async function getActiveTeams () {
 
 async function getPlayerStats () {
   try {
+    console.log('Getting players stats')
     const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(JSON.parse)
+    await createDir('PlayersStats/')
+    let numPage = 0
+    let pageSize = 500
+    while (pageSize === 500) {
+      const players = playerData[numPage].players
+      for (const player of players) {
+        const tag = player.tag
+        const id = player._id
+        const filePath = await createDir(`PlayersStats/${tag}/`)
+        console.log(`Page: ${numPage + 1} ------ Player: ${tag}`)
+        for (const stat of stats) {
+          const data = await doFetch(`https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`)
+          await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
+          sleep(2000)
+        }
+      }
+      pageSize = playerData[numPage].pageSize
+      numPage += 1
+    }
+    console.log('Players stats finished')
   } catch (err) {
     console.log(err)
   }
 }
 
 async function getTeamStats () {
-
+  try {
+    console.log('Getting teams stats')
+    const teamsData = await readFile(`${DB_PATH}/Teams/teams.json`).then(JSON.parse)
+    await createDir('TeamsStats/')
+    let numPage = 0
+    let pageSize = 500
+    while (pageSize === 500) {
+      const teams = teamsData[numPage].teams
+      for (const team of teams) {
+        const name = team.name
+        const id = team._id
+        const filePath = await createDir(`TeamsStats/${name}/`)
+        console.log(`Page: ${numPage + 1} ------ Team: ${name}`)
+        for (const stat of stats) {
+          const data = await doFetch(`https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`)
+          await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
+          sleep(2000)
+        }
+      }
+      pageSize = teamsData[numPage].pageSize
+      numPage += 1
+    }
+    console.log('Teams stats finished')
+  } catch (err) {
+    console.log(err)
+  }
 }
 
-// await removeDir()
+await removeDir()
 await createDbPath()
-// await getEvents()
-// await getMatches()
-// await getGames()
-// await getPlayers()
-// await getTeams()
-// await getActiveTeams()
+await getEvents()
+await getMatches()
+await getGames()
+await getPlayers()
+await getTeams()
+await getActiveTeams()
 await getPlayerStats()
-// await getTeamStats()
+await getTeamStats()
+
+console.log('All data downloaded')
