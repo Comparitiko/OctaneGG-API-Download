@@ -94,6 +94,7 @@ async function createDbPath () {
     await mkdir(DB_PATH)
     console.log('This is the DB path: ', DB_PATH)
   } catch (err) {
+    if (err.code === 'EEXIST') return
     console.log(err)
   }
 }
@@ -111,8 +112,7 @@ async function createDir (dirName) {
     const filePath = `${DB_PATH}${dirName}`
     await mkdir(filePath)
   } catch (err) {
-    if (err.code === 'EEXIST') console.log('The path already exists')
-    console.log(err.code)
+    console.log(err)
   }
 }
 
@@ -139,7 +139,7 @@ async function getEvents () {
       page += 1
       await sleep(2000)
       if (page === 1) await writeFile(`${filePath}events.json`, JSON.stringify(data, null, 2), 'utf-8')
-      await appendFile(`${filePath}events.json`, JSON.stringify(data, null, 2), 'utf-8')
+      else if (page !== 1) await appendFile(`${filePath}events.json`, JSON.stringify(data, null, 2), 'utf-8')
     }
   } catch (err) {
     console.log(err)
@@ -160,7 +160,7 @@ async function getMatches () {
       console.log(pageSize)
       await sleep(2000)
       if (page === 1) await writeFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
-      await appendFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
+      else if (page !== 1) await appendFile(`${filePath}matches.json`, JSON.stringify(data, null, 2), 'utf-8')
       page += 1
     }
   } catch (err) {
@@ -202,7 +202,7 @@ async function getPlayers () {
       page += 1
       await sleep(2000)
       if (page === 1) await writeFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
-      await appendFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
+      else if (page !== 1) await appendFile(`${filePath}players.json`, JSON.stringify(data, null, 2), 'utf-8')
     } catch (err) {
       console.log(err)
     }
@@ -223,7 +223,7 @@ async function getTeams () {
       page += 1
       await sleep(2000)
       if (page === 1) await writeFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
-      await appendFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
+      else if (page !== 1) await appendFile(`${filePath}teams.json`, JSON.stringify(data, null, 2), 'utf-8')
     } catch (err) {
       console.log(err)
     }
@@ -245,7 +245,7 @@ async function getActiveTeams () {
       page += 1
       await sleep(2000)
       if (page === 1) await writeFile(`${filePath}ActiveTeams.json`, JSON.stringify(data, null, 2), 'utf-8')
-      await appendFile(`${filePath}ActiveTeams.json`, JSON.stringify(data, null, 2), 'utf-8')
+      else if (page !== 1) await appendFile(`${filePath}ActiveTeams.json`, JSON.stringify(data, null, 2), 'utf-8')
     } catch (err) {
       console.log(err)
     }
@@ -254,8 +254,12 @@ async function getActiveTeams () {
 }
 
 async function getPlayerStats () {
-  const playerData = await readFile(`${DB_PATH}Players/players.json`)
-  console.log(playerData)
+  try {
+    const playerData = await readFile(`${DB_PATH}Players/players.json`).then(JSON.parse)
+    console.log(playerData)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 async function getTeamStats () {
@@ -270,5 +274,5 @@ await createDbPath()
 // await getPlayers()
 // await getTeams()
 // await getActiveTeams()
-// await getPlayerStats()
+await getPlayerStats()
 // await getTeamStats
