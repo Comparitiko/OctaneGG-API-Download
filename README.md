@@ -1,6 +1,8 @@
 # OctaneGG-API-Download
 Download all the API of Octane.gg
 
-# Sample Heading Text
-## Sample Heading Text
-###### Sample Heading Text
+### Just run the command:
+
+```
+npm run start
+```
