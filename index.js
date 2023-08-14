@@ -178,7 +178,6 @@ async function getActiveTeams () {
       const data = await doFetch(`https://zsr.octane.gg/teams/active?page=${page}&perPage=500`)
       console.log('Page: ', page)
       pageSize = Object.keys(data.teams).length
-      console.log(pageSize)
       page += 1
       activeTeams = activeTeams.concat(data.teams)
       await sleep(250)
@@ -198,6 +197,7 @@ async function getPlayerStats () {
     await createDir('PlayersStats/')
     let numPage = 0
     let pageSize = 500
+    let numPlayer = 1
     while (pageSize === 500) {
       const players = playerData[numPage].players
       for (const player of players) {
@@ -205,7 +205,9 @@ async function getPlayerStats () {
         const fixedTag = await fixName(tag)
         const id = player._id
         const filePath = await createDir(`PlayersStats/${fixedTag}/`)
-        console.log(`Page: ${numPage + 1} ------ Player: ${fixedTag}`)
+        console.log(`Page: ${numPage + 1} NumPlayer:${numPlayer} ------ Player: ${fixedTag}`)
+        numPlayer += 1
+        if (numPlayer === 501) numPlayer = 1
         for (const stat of stats) {
           const data = await doFetch(`https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`)
           await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
@@ -229,6 +231,7 @@ async function getTeamStats () {
     await createDir('TeamsStats/')
     let numPage = 0
     let pageSize = 500
+    let numTeam = 1
     while (pageSize === 500) {
       const teams = teamsData[numPage].teams
       for (const team of teams) {
@@ -236,7 +239,9 @@ async function getTeamStats () {
         const fixedName = fixName(name)
         const id = team._id
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
-        console.log(`Page: ${numPage + 1} ------ Team: ${fixedName}`)
+        console.log(`Page: ${numPage + 1} NumTeam:${numTeam} ------ Team: ${fixedName}`)
+        numTeam += 1
+        if (numTeam === 501) numTeam = 1
         for (const stat of stats) {
           const data = await doFetch(`https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`)
           await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
