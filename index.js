@@ -23,7 +23,7 @@ async function fixName (name) {
 }
 
 // Function to remove the DB
-async function removeDir () {
+async function removeDBPath () {
   try {
     await rm(DB_PATH, { force: true, recursive: true })
   } catch (err) {
@@ -236,7 +236,7 @@ async function getTeamStats () {
       const teams = teamsData[numPage].teams
       for (const team of teams) {
         const name = team.name
-        const fixedName = fixName(name)
+        const fixedName = await fixName(name)
         const id = team._id
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
         console.log(`Page: ${numPage + 1} ------ NumTeam:${numTeam} ------ Team: ${fixedName}`)
@@ -259,7 +259,7 @@ async function getTeamStats () {
 
 console.log('⌛ Getting all data ⌛')
 
-await removeDir()
+await removeDBPath()
 await createDbPath()
 await getEvents()
 await getMatches()
