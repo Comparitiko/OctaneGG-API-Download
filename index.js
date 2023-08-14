@@ -69,7 +69,7 @@ async function getEvents () {
       pageSize = data.pageSize
       page += 1
       events = events.concat(data)
-      await sleep(250)
+      await sleep(100)
     }
   } catch (err) {
     console.log(err)
@@ -89,7 +89,7 @@ async function getMatches () {
       const data = await doFetch(`https://zsr.octane.gg/matches?page=${page}&perPage=500`)
       console.log('Page: ', page)
       pageSize = data.pageSize
-      await sleep(250)
+      await sleep(100)
       await writeFile(`${filePath}matches-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
       page += 1
     }
@@ -110,7 +110,7 @@ async function getGames () {
       const data = await doFetch(`https://zsr.octane.gg/games?page=${page}&perPage=500`)
       console.log('Page: ', page)
       pageSize = data.pageSize
-      await sleep(250)
+      await sleep(100)
       await writeFile(`${filePath}games-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
       page += 1
     }
@@ -134,7 +134,7 @@ async function getPlayers () {
       pageSize = data.pageSize
       page += 1
       players = players.concat(data)
-      await sleep(250)
+      await sleep(100)
     } catch (err) {
       console.log(err)
     }
@@ -156,7 +156,7 @@ async function getTeams () {
       console.log('Page: ', page)
       pageSize = data.pageSize
       page += 1
-      await sleep(250)
+      await sleep(100)
       teams = teams.concat(data)
     } catch (err) {
       console.log(err)
@@ -180,7 +180,7 @@ async function getActiveTeams () {
       pageSize = Object.keys(data.teams).length
       page += 1
       activeTeams = activeTeams.concat(data.teams)
-      await sleep(250)
+      await sleep(100)
     } catch (err) {
       console.log(err)
     }
@@ -211,7 +211,7 @@ async function getPlayerStats () {
         for (const stat of stats) {
           const data = await doFetch(`https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`)
           await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
-          sleep(250)
+          sleep(100)
         }
       }
       pageSize = playerData[numPage].pageSize
@@ -245,7 +245,7 @@ async function getTeamStats () {
         for (const stat of stats) {
           const data = await doFetch(`https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`)
           await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
-          sleep(250)
+          sleep(100)
         }
       }
       pageSize = teamsData[numPage].pageSize
