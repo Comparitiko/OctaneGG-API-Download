@@ -205,7 +205,7 @@ async function getPlayerStats () {
         const fixedTag = await fixName(tag)
         const id = player._id
         const filePath = await createDir(`PlayersStats/${fixedTag}/`)
-        console.log(`Page: ${numPage + 1} NumPlayer:${numPlayer} ------ Player: ${fixedTag}`)
+        console.log(`Page: ${numPage + 1} ------ NumPlayer:${numPlayer} ------ Player: ${fixedTag}`)
         numPlayer += 1
         if (numPlayer === 501) numPlayer = 1
         for (const stat of stats) {
@@ -239,7 +239,7 @@ async function getTeamStats () {
         const fixedName = fixName(name)
         const id = team._id
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
-        console.log(`Page: ${numPage + 1} NumTeam:${numTeam} ------ Team: ${fixedName}`)
+        console.log(`Page: ${numPage + 1} ------ NumTeam:${numTeam} ------ Team: ${fixedName}`)
         numTeam += 1
         if (numTeam === 501) numTeam = 1
         for (const stat of stats) {
