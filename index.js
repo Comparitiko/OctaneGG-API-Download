@@ -16,6 +16,12 @@ async function createDbPath () {
   }
 }
 
+// Function to replace names with dots to create dirs
+async function fixName (name) {
+  const fixedName = name.replace('.', '')
+  return fixedName
+}
+
 // Function to remove the DB
 async function removeDir () {
   try {
@@ -196,9 +202,10 @@ async function getPlayerStats () {
       const players = playerData[numPage].players
       for (const player of players) {
         const tag = player.tag
+        const fixedTag = await fixName(tag)
         const id = player._id
-        const filePath = await createDir(`PlayersStats/${tag}/`)
-        console.log(`Page: ${numPage + 1} ------ Player: ${tag}`)
+        const filePath = await createDir(`PlayersStats/${fixedTag}/`)
+        console.log(`Page: ${numPage + 1} ------ Player: ${fixedTag}`)
         for (const stat of stats) {
           const data = await doFetch(`https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`)
           await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
@@ -226,9 +233,10 @@ async function getTeamStats () {
       const teams = teamsData[numPage].teams
       for (const team of teams) {
         const name = team.name
+        const fixedName = fixName(name)
         const id = team._id
-        const filePath = await createDir(`TeamsStats/${name}/`)
-        console.log(`Page: ${numPage + 1} ------ Team: ${name}`)
+        const filePath = await createDir(`TeamsStats/${fixedName}/`)
+        console.log(`Page: ${numPage + 1} ------ Team: ${fixedName}`)
         for (const stat of stats) {
           const data = await doFetch(`https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`)
           await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
