@@ -43,11 +43,6 @@ async function createDir (dirName) {
   }
 }
 
-// Function to wait some ms to do more requests
-async function sleep (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 // Function to fetch urls
 async function doFetch (url) {
   const response = await fetch(url, headers)
@@ -64,17 +59,22 @@ async function getEvents () {
   const filePath = await createDir('Events/')
   try {
     while (pageSize === 500) {
-      const data = await doFetch(`https://zsr.octane.gg/events?page=${page}&perPage=500`)
+      const data = await doFetch(
+        `https://zsr.octane.gg/events?page=${page}&perPage=500`
+      )
       console.log('Page: ', page)
       pageSize = data.pageSize
       page += 1
       events = events.concat(data)
-      await sleep(100)
     }
   } catch (err) {
     console.log(err)
   }
-  await writeFile(`${filePath}events.json`, JSON.stringify(events, null, 2), 'utf-8')
+  await writeFile(
+    `${filePath}events.json`,
+    JSON.stringify(events, null, 2),
+    'utf-8'
+  )
   console.log('✔️ Finished get events ✔️')
 }
 
@@ -86,11 +86,16 @@ async function getMatches () {
   const filePath = await createDir('Matches/')
   try {
     while (pageSize === 500) {
-      const data = await doFetch(`https://zsr.octane.gg/matches?page=${page}&perPage=500`)
+      const data = await doFetch(
+        `https://zsr.octane.gg/matches?page=${page}&perPage=500`
+      )
       console.log('Page: ', page)
       pageSize = data.pageSize
-      await sleep(100)
-      await writeFile(`${filePath}matches-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
+      await writeFile(
+        `${filePath}matches-${page}.json`,
+        JSON.stringify(data, null, 2),
+        'utf-8'
+      )
       page += 1
     }
   } catch (err) {
@@ -107,11 +112,16 @@ async function getGames () {
   const filePath = await createDir('Games/')
   try {
     while (pageSize === 500) {
-      const data = await doFetch(`https://zsr.octane.gg/games?page=${page}&perPage=500`)
+      const data = await doFetch(
+        `https://zsr.octane.gg/games?page=${page}&perPage=500`
+      )
       console.log('Page: ', page)
       pageSize = data.pageSize
-      await sleep(100)
-      await writeFile(`${filePath}games-${page}.json`, JSON.stringify(data, null, 2), 'utf-8')
+      await writeFile(
+        `${filePath}games-${page}.json`,
+        JSON.stringify(data, null, 2),
+        'utf-8'
+      )
       page += 1
     }
   } catch (err) {
@@ -129,17 +139,22 @@ async function getPlayers () {
   const filePath = await createDir('Players/')
   while (pageSize === 500) {
     try {
-      const data = await doFetch(`https://zsr.octane.gg/players?page=${page}&perPage=500`)
+      const data = await doFetch(
+        `https://zsr.octane.gg/players?page=${page}&perPage=500`
+      )
       console.log('Page: ', page)
       pageSize = data.pageSize
       page += 1
       players = players.concat(data)
-      await sleep(100)
     } catch (err) {
       console.log(err)
     }
   }
-  await writeFile(`${filePath}players.json`, JSON.stringify(players, null, 2), 'utf-8')
+  await writeFile(
+    `${filePath}players.json`,
+    JSON.stringify(players, null, 2),
+    'utf-8'
+  )
   console.log('✔️ Finished get players ✔️')
 }
 
@@ -152,17 +167,22 @@ async function getTeams () {
   const filePath = await createDir('Teams/')
   while (pageSize === 500) {
     try {
-      const data = await doFetch(`https://zsr.octane.gg/teams?page=${page}&perPage=500`)
+      const data = await doFetch(
+        `https://zsr.octane.gg/teams?page=${page}&perPage=500`
+      )
       console.log('Page: ', page)
       pageSize = data.pageSize
       page += 1
-      await sleep(100)
       teams = teams.concat(data)
     } catch (err) {
       console.log(err)
     }
   }
-  await writeFile(`${filePath}teams.json`, JSON.stringify(teams, null, 2), 'utf-8')
+  await writeFile(
+    `${filePath}teams.json`,
+    JSON.stringify(teams, null, 2),
+    'utf-8'
+  )
   console.log('✔️ Finished get teams ✔️')
 }
 
@@ -175,17 +195,22 @@ async function getActiveTeams () {
   const filePath = await createDir('ActiveTeams/')
   while (pageSize === 500) {
     try {
-      const data = await doFetch(`https://zsr.octane.gg/teams/active?page=${page}&perPage=500`)
+      const data = await doFetch(
+        `https://zsr.octane.gg/teams/active?page=${page}&perPage=500`
+      )
       console.log('Page: ', page)
       pageSize = Object.keys(data.teams).length
       page += 1
       activeTeams = activeTeams.concat(data.teams)
-      await sleep(100)
     } catch (err) {
       console.log(err)
     }
   }
-  await writeFile(`${filePath}ActiveTeams.json`, JSON.stringify(activeTeams, null, 2), 'utf-8')
+  await writeFile(
+    `${filePath}ActiveTeams.json`,
+    JSON.stringify(activeTeams, null, 2),
+    'utf-8'
+  )
   console.log('✔️ Finished get active teams ✔️')
 }
 
@@ -193,7 +218,9 @@ async function getActiveTeams () {
 async function getPlayerStats () {
   try {
     console.log('Getting players stats')
-    const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(JSON.parse)
+    const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(
+      JSON.parse
+    )
     await createDir('PlayersStats/')
     let numPage = 0
     let pageSize = 500
@@ -205,13 +232,22 @@ async function getPlayerStats () {
         const fixedTag = await fixName(tag)
         const id = player._id
         const filePath = await createDir(`PlayersStats/${fixedTag}/`)
-        console.log(`Page: ${numPage + 1} ------ NumPlayer:${numPlayer} ------ Player: ${fixedTag}`)
+        console.log(
+          `Page: ${
+            numPage + 1
+          } ------ NumPlayer:${numPlayer} ------ Player: ${fixedTag}`
+        )
         numPlayer += 1
         if (numPlayer === 501) numPlayer = 1
         for (const stat of stats) {
-          const data = await doFetch(`https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`)
-          await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
-          sleep(100)
+          const data = await doFetch(
+            `https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`
+          )
+          await writeFile(
+            `${filePath}${stat}.json`,
+            JSON.stringify(data, null, 2),
+            'utf-8'
+          )
         }
       }
       pageSize = playerData[numPage].pageSize
@@ -227,7 +263,9 @@ async function getPlayerStats () {
 async function getTeamStats () {
   try {
     console.log('Getting teams stats')
-    const teamsData = await readFile(`${DB_PATH}/Teams/teams.json`).then(JSON.parse)
+    const teamsData = await readFile(`${DB_PATH}/Teams/teams.json`).then(
+      JSON.parse
+    )
     await createDir('TeamsStats/')
     let numPage = 0
     let pageSize = 500
@@ -239,13 +277,22 @@ async function getTeamStats () {
         const fixedName = await fixName(name)
         const id = team._id
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
-        console.log(`Page: ${numPage + 1} ------ NumTeam:${numTeam} ------ Team: ${fixedName}`)
+        console.log(
+          `Page: ${
+            numPage + 1
+          } ------ NumTeam:${numTeam} ------ Team: ${fixedName}`
+        )
         numTeam += 1
         if (numTeam === 501) numTeam = 1
         for (const stat of stats) {
-          const data = await doFetch(`https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`)
-          await writeFile(`${filePath}${stat}.json`, JSON.stringify(data, null, 2), 'utf-8')
-          sleep(100)
+          const data = await doFetch(
+            `https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`
+          )
+          await writeFile(
+            `${filePath}${stat}.json`,
+            JSON.stringify(data, null, 2),
+            'utf-8'
+          )
         }
       }
       pageSize = teamsData[numPage].pageSize
