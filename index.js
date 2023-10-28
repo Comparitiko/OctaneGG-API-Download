@@ -1,21 +1,3 @@
-import { writeFile, mkdir, rm, readFile } from 'node:fs/promises'
-import path from 'node:path'
-import { stats } from './utils/utils.js'
-
-const headers = { 'User-Agent': 'OctaneGG-API-Download' }
-const DB_PATH = path.join(process.cwd(), './Database/')
-
-// Function to create the DB
-async function createDbPath () {
-  try {
-    await mkdir(DB_PATH)
-    console.log('This is the DB path: ', DB_PATH)
-  } catch (err) {
-    if (err.code === 'EEXIST') return
-    console.log(err)
-  }
-}
-
 // Function to replace names with dots to create dirs
 async function fixName (name) {
   const fixedName = name.replace('.', '')
