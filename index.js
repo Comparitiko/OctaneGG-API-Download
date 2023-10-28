@@ -1,11 +1,13 @@
 // Function to replace names with dots to create dirs
-async function fixName (name) {
+async function fixName(name) {
   const fixedName = name.replace('.', '')
   return fixedName
 }
 
+const headers = { 'User-Agent': 'OctaneGG-API-Download' }
+
 // Function to remove the DB
-async function removeDBPath () {
+async function removeDBPath() {
   try {
     await rm(DB_PATH, { force: true, recursive: true })
   } catch (err) {
@@ -14,7 +16,7 @@ async function removeDBPath () {
 }
 
 // Function to create a directory in the DB
-async function createDir (dirName) {
+async function createDir(dirName) {
   try {
     const filePath = `${DB_PATH}${dirName}`
     await mkdir(filePath)
@@ -26,14 +28,14 @@ async function createDir (dirName) {
 }
 
 // Function to fetch urls
-async function doFetch (url) {
+async function doFetch(url) {
   const response = await fetch(url, headers)
   const data = response.json()
   return data
 }
 
 // Get all the events
-async function getEvents () {
+async function getEvents() {
   console.log('📩 Getting events 📩')
   let page = 1
   let pageSize = 500
@@ -61,7 +63,7 @@ async function getEvents () {
 }
 
 // Get all the series played
-async function getMatches () {
+async function getMatches() {
   console.log('📩 Getting matches 📩')
   let page = 1
   let pageSize = 500
@@ -87,7 +89,7 @@ async function getMatches () {
 }
 
 // Get all the games played
-async function getGames () {
+async function getGames() {
   console.log('📩 Getting games 📩')
   let page = 1
   let pageSize = 500
@@ -113,7 +115,7 @@ async function getGames () {
 }
 
 // Get all the players
-async function getPlayers () {
+async function getPlayers() {
   console.log('📩 Getting players 📩')
   let page = 1
   let pageSize = 500
@@ -141,7 +143,7 @@ async function getPlayers () {
 }
 
 // Get all the teams
-async function getTeams () {
+async function getTeams() {
   console.log('📩 Getting teams 📩')
   let page = 1
   let pageSize = 500
@@ -169,7 +171,7 @@ async function getTeams () {
 }
 
 // Get active teams
-async function getActiveTeams () {
+async function getActiveTeams() {
   console.log('📩 Getting active teams 📩')
   let page = 1
   let pageSize = 500
@@ -197,7 +199,7 @@ async function getActiveTeams () {
 }
 
 // Get all stats of players by their id
-async function getPlayerStats () {
+async function getPlayerStats() {
   try {
     console.log('Getting players stats')
     const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(
@@ -215,8 +217,7 @@ async function getPlayerStats () {
         const id = player._id
         const filePath = await createDir(`PlayersStats/${fixedTag}/`)
         console.log(
-          `Page: ${
-            numPage + 1
+          `Page: ${numPage + 1
           } ------ NumPlayer:${numPlayer} ------ Player: ${fixedTag}`
         )
         numPlayer += 1
@@ -242,7 +243,7 @@ async function getPlayerStats () {
 }
 
 // Get all stats of teams by their id
-async function getTeamStats () {
+async function getTeamStats() {
   try {
     console.log('Getting teams stats')
     const teamsData = await readFile(`${DB_PATH}/Teams/teams.json`).then(
@@ -260,8 +261,7 @@ async function getTeamStats () {
         const id = team._id
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
         console.log(
-          `Page: ${
-            numPage + 1
+          `Page: ${numPage + 1
           } ------ NumTeam:${numTeam} ------ Team: ${fixedName}`
         )
         numTeam += 1

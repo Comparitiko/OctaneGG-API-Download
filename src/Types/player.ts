@@ -1,15 +1,18 @@
 export interface Players {
-  players: Player[]
+  players: PlayerData[]
+  page: number,
+  perPage: number,
+  pageSize: number
 }
 
-export interface Player {
+export interface PlayerData {
   _id: string
   slug: string
   tag: string
-  name: string
-  country: string
-  accounts: Account[]
-  relevant: boolean
+  name?: string
+  country?: string
+  accounts?: Account[]
+  relevant?: boolean
 }
 
 export interface Account {
