@@ -1,6 +1,7 @@
-import { createDir } from './dir';
-import { writeFile } from 'fs/promises';
-import { Players } from '../Types/player';
+import { createDir } from './dir'
+import { writeFile } from 'fs/promises'
+import { type Players } from '../Types/players'
+import { type Teams } from '../Types/teams'
 
 const headers = { 'User-Agent': 'OctaneGG-API-Download' }
 
@@ -8,7 +9,7 @@ const headers = { 'User-Agent': 'OctaneGG-API-Download' }
 export async function doFetch(url: string) {
   const response = await fetch(url, headers)
   const data = response.json()
-  return data
+  return await data
 }
 
 // Get all the events
@@ -120,15 +121,15 @@ async function getPlayers() {
 }
 
 // Get all the teams
-async function getTeams() {
+export async function getTeams (): Promise<void> {
   console.log('📩 Getting teams 📩')
   let page = 1
   let pageSize = 500
-  let teams = []
+  let teams: Teams[] = []
   const filePath = await createDir('Teams/')
   while (pageSize === 500) {
     try {
-      const data = await doFetch(
+      const data: Teams = await doFetch(
         `https://zsr.octane.gg/teams?page=${page}&perPage=500`
       )
       console.log('Page: ', page)

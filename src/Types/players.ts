@@ -1,7 +1,7 @@
 export interface Players {
   players: PlayerData[]
-  page: number,
-  perPage: number,
+  page: number
+  perPage: number
   pageSize: number
 }
 
