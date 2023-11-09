@@ -1,13 +1,17 @@
 import { createDir } from './dir'
-import { writeFile } from 'fs/promises'
+import { writeFile, readFile } from 'fs/promises'
+import { stats } from '../utils/utils'
 import { type Players } from '../Types/players'
 import { type Teams } from '../Types/teams'
-
-const headers = { 'User-Agent': 'OctaneGG-API-Download' }
+import { type Events } from '../Types/events'
+import { type Games } from '../Types/games'
+import { type ActiveTeams } from '../Types/activeTeams'
+import { type TeamStats } from '../Types/teamStats'
+import { type PlayerStats } from '../Types/playerStats'
 
 // Function to fetch urls
-export async function doFetch(url: string) {
-  const response = await fetch(url, headers)
+export async function doFetch(url: string): Promise<object> {
+  const response = await fetch(url)
   const data = response.json()
   return await data
 }
@@ -17,7 +21,7 @@ async function getEvents() {
   console.log('📩 Getting events 📩')
   let page = 1
   let pageSize = 500
-  let events = []
+  let events: Events[] = []
   const filePath = await createDir('Events/')
   try {
     while (pageSize === 500) {
@@ -41,7 +45,7 @@ async function getEvents() {
 }
 
 // Get all the series played
-async function getMatches() {
+async function getMatches (): Promise<void> {
   console.log('📩 Getting matches 📩')
   let page = 1
   let pageSize = 500
@@ -74,7 +78,7 @@ async function getGames() {
   const filePath = await createDir('Games/')
   try {
     while (pageSize === 500) {
-      const data = await doFetch(
+      const data: Games = await doFetch(
         `https://zsr.octane.gg/games?page=${page}&perPage=500`
       )
       console.log('Page: ', page)
@@ -97,7 +101,7 @@ async function getPlayers() {
   console.log('📩 Getting players 📩')
   let page = 1
   let pageSize = 500
-  let players: Players = []
+  let players: Players[] = []
   const filePath = await createDir('Players/')
   while (pageSize === 500) {
     try {
@@ -153,7 +157,7 @@ async function getActiveTeams() {
   console.log('📩 Getting active teams 📩')
   let page = 1
   let pageSize = 500
-  let activeTeams = []
+  let activeTeams: ActiveTeams[] = []
   const filePath = await createDir('ActiveTeams/')
   while (pageSize === 500) {
     try {
