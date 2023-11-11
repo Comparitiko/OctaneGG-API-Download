@@ -1,4 +1,5 @@
 import { createDbPath, removeDBPath } from './lib/dir'
+import { getEvents, getMatches, getGames, getPlayers, getTeams, getActiveTeams, getPlayerStats, getTeamStats } from './lib/api'
 console.log('⌛ Getting all data ⌛')
 
 await removeDBPath()

@@ -1,52 +1,42 @@
 import { mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 
-
 const DB_PATH = path.join(process.cwd(), './Database/')
 
+// Function to replace names with dots to create dirs
+export async function fixName (name: string): Promise<string> {
+  const fixedName = name.replace('.', '')
+  return fixedName
+}
+
 // Function to create the DB directory
-export async function createDbPath() {
-
+export async function createDbPath (): Promise<void> {
   try {
-
     await mkdir(DB_PATH)
     console.log('This is the DB path: ', DB_PATH)
-
   } catch (err) {
-
     console.log(err)
-
   }
-
 }
 
 // Function to remove the DB directory
-export async function removeDBPath() {
-
+export async function removeDBPath (): Promise<void> {
   try {
-
     await rm(DB_PATH, { force: true, recursive: true })
-
   } catch (err) {
-
     console.log(err)
-
   }
-
 }
 
 // Function to create a directory in the DB
-export async function createDir(dirName: string) {
-
+export async function createDir (dirName: string): Promise<string> {
   try {
-
     const filePath = `${DB_PATH}${dirName}`
     await mkdir(filePath)
     return filePath
-
   } catch (err) {
-
-    console.log(err);
-
+    console.log(err)
+    // Return the filepath without creating
+    return `${DB_PATH}${dirName}`
   }
 }

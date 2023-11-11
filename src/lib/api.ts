@@ -1,4 +1,4 @@
-import { createDir } from './dir'
+import { createDir, fixName } from './dir'
 import { writeFile, readFile } from 'fs/promises'
 import { stats } from '../utils/utils'
 import { type Players } from '../Types/players'
@@ -10,14 +10,14 @@ import { type TeamStats } from '../Types/teamStats'
 import { type PlayerStats } from '../Types/playerStats'
 
 // Function to fetch urls
-export async function doFetch(url: string): Promise<object> {
+export async function doFetch (url: string): Promise<object> {
   const response = await fetch(url)
   const data = response.json()
   return await data
 }
 
 // Get all the events
-async function getEvents() {
+export async function getEvents () {
   console.log('📩 Getting events 📩')
   let page = 1
   let pageSize = 500
@@ -45,7 +45,7 @@ async function getEvents() {
 }
 
 // Get all the series played
-async function getMatches (): Promise<void> {
+export async function getMatches (): Promise<void> {
   console.log('📩 Getting matches 📩')
   let page = 1
   let pageSize = 500
@@ -71,7 +71,7 @@ async function getMatches (): Promise<void> {
 }
 
 // Get all the games played
-async function getGames() {
+export async function getGames () {
   console.log('📩 Getting games 📩')
   let page = 1
   let pageSize = 500
@@ -97,7 +97,7 @@ async function getGames() {
 }
 
 // Get all the players
-async function getPlayers() {
+export async function getPlayers () {
   console.log('📩 Getting players 📩')
   let page = 1
   let pageSize = 500
@@ -153,7 +153,7 @@ export async function getTeams (): Promise<void> {
 }
 
 // Get active teams
-async function getActiveTeams() {
+export async function getActiveTeams () {
   console.log('📩 Getting active teams 📩')
   let page = 1
   let pageSize = 500
@@ -181,7 +181,7 @@ async function getActiveTeams() {
 }
 
 // Get all stats of players by their id
-async function getPlayerStats() {
+export async function getPlayerStats () {
   try {
     console.log('Getting players stats')
     const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(
@@ -225,7 +225,7 @@ async function getPlayerStats() {
 }
 
 // Get all stats of teams by their id
-async function getTeamStats() {
+export async function getTeamStats () {
   try {
     console.log('Getting teams stats')
     const teamsData = await readFile(`${DB_PATH}/Teams/teams.json`).then(
