@@ -1,4 +1,4 @@
-import { createDir, fixName } from './dir'
+import { createDir, fixName, DB_PATH } from './dir'
 import { writeFile, readFile } from 'fs/promises'
 import { stats } from '../utils/utils'
 import { type Players } from '../Types/players'
@@ -8,16 +8,17 @@ import { type Games } from '../Types/games'
 import { type ActiveTeams } from '../Types/activeTeams'
 import { type TeamStats } from '../Types/teamStats'
 import { type PlayerStats } from '../Types/playerStats'
+import { type Matches } from '../Types/matches'
 
 // Function to fetch urls
-export async function doFetch (url: string): Promise<object> {
+export async function doFetch<T> (url: string): Promise<T> {
   const response = await fetch(url)
   const data = response.json()
-  return await data
+  return await data as T
 }
 
 // Get all the events
-export async function getEvents () {
+export async function getEvents (): Promise<void> {
   console.log('📩 Getting events 📩')
   let page = 1
   let pageSize = 500
@@ -25,7 +26,7 @@ export async function getEvents () {
   const filePath = await createDir('Events/')
   try {
     while (pageSize === 500) {
-      const data = await doFetch(
+      const data: Events = await doFetch(
         `https://zsr.octane.gg/events?page=${page}&perPage=500`
       )
       console.log('Page: ', page)
@@ -52,7 +53,7 @@ export async function getMatches (): Promise<void> {
   const filePath = await createDir('Matches/')
   try {
     while (pageSize === 500) {
-      const data = await doFetch(
+      const data: Matches = await doFetch(
         `https://zsr.octane.gg/matches?page=${page}&perPage=500`
       )
       console.log('Page: ', page)
@@ -71,7 +72,7 @@ export async function getMatches (): Promise<void> {
 }
 
 // Get all the games played
-export async function getGames () {
+export async function getGames (): Promise<void> {
   console.log('📩 Getting games 📩')
   let page = 1
   let pageSize = 500
@@ -97,7 +98,7 @@ export async function getGames () {
 }
 
 // Get all the players
-export async function getPlayers () {
+export async function getPlayers (): Promise<void> {
   console.log('📩 Getting players 📩')
   let page = 1
   let pageSize = 500
@@ -153,21 +154,21 @@ export async function getTeams (): Promise<void> {
 }
 
 // Get active teams
-export async function getActiveTeams () {
+export async function getActiveTeams (): Promise<void> {
   console.log('📩 Getting active teams 📩')
   let page = 1
   let pageSize = 500
-  let activeTeams: ActiveTeams[] = []
+  const activeTeams: ActiveTeams = { teams: [] }
   const filePath = await createDir('ActiveTeams/')
   while (pageSize === 500) {
     try {
-      const data = await doFetch(
+      const data: ActiveTeams = await doFetch(
         `https://zsr.octane.gg/teams/active?page=${page}&perPage=500`
       )
       console.log('Page: ', page)
       pageSize = Object.keys(data.teams).length
       page += 1
-      activeTeams = activeTeams.concat(data.teams)
+      activeTeams.teams = activeTeams.teams.concat(data.teams)
     } catch (err) {
       console.log(err)
     }
@@ -181,12 +182,10 @@ export async function getActiveTeams () {
 }
 
 // Get all stats of players by their id
-export async function getPlayerStats () {
+export async function getPlayerStats (): Promise<void> {
   try {
     console.log('Getting players stats')
-    const playerData = await readFile(`${DB_PATH}/Players/players.json`).then(
-      JSON.parse
-    )
+    const playerData: Players[] = JSON.parse(await readFile(`${DB_PATH}/Players/players.json`, { encoding: 'utf-8' }))
     await createDir('PlayersStats/')
     let numPage = 0
     let pageSize = 500
@@ -205,7 +204,7 @@ export async function getPlayerStats () {
         numPlayer += 1
         if (numPlayer === 501) numPlayer = 1
         for (const stat of stats) {
-          const data = await doFetch(
+          const data: PlayerStats = await doFetch(
             `https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`
           )
           await writeFile(
@@ -225,12 +224,10 @@ export async function getPlayerStats () {
 }
 
 // Get all stats of teams by their id
-export async function getTeamStats () {
+export async function getTeamStats (): Promise<void> {
   try {
     console.log('Getting teams stats')
-    const teamsData = await readFile(`${DB_PATH}/Teams/teams.json`).then(
-      JSON.parse
-    )
+    const teamsData: Teams[] = JSON.parse(await readFile(`${DB_PATH}/Teams/teams.json`, { encoding: 'utf-8' }))
     await createDir('TeamsStats/')
     let numPage = 0
     let pageSize = 500
@@ -249,7 +246,7 @@ export async function getTeamStats () {
         numTeam += 1
         if (numTeam === 501) numTeam = 1
         for (const stat of stats) {
-          const data = await doFetch(
+          const data: TeamStats = await doFetch(
             `https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`
           )
           await writeFile(

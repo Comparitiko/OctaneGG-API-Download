@@ -1,7 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 
-const DB_PATH = path.join(process.cwd(), './Database/')
+export const DB_PATH = path.join(process.cwd(), './Database/')
 
 // Function to replace names with dots to create dirs
 export async function fixName (name: string): Promise<string> {
