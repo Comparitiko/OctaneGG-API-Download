@@ -199,7 +199,7 @@ export async function getPlayerStats (): Promise<void> {
         const filePath = await createDir(`PlayersStats/${fixedTag}/`)
         console.log(
           `Page: ${numPage + 1
-          } ------ NumPlayer:${numPlayer} ------ Player: ${fixedTag}`
+          } ------ PlayerNum:${numPlayer} ------ Player: ${fixedTag}`
         )
         numPlayer += 1
         if (numPlayer === 501) numPlayer = 1
@@ -241,7 +241,7 @@ export async function getTeamStats (): Promise<void> {
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
         console.log(
           `Page: ${numPage + 1
-          } ------ NumTeam:${numTeam} ------ Team: ${fixedName}`
+          } ------ TeamNum:${numTeam} ------ Team: ${fixedName}`
         )
         numTeam += 1
         if (numTeam === 501) numTeam = 1
