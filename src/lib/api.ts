@@ -1,6 +1,6 @@
-import { createDir, fixName, DB_PATH } from './dir'
+import { createDir, fixName, DB_PATH } from './dir.js'
 import { writeFile, readFile } from 'fs/promises'
-import { stats } from '../utils/utils'
+import { stats } from '../utils/utils.js'
 import { type Players } from '../Types/players'
 import { type Teams } from '../Types/teams'
 import { type Events } from '../Types/events'

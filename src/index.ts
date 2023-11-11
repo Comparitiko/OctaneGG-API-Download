@@ -1,5 +1,5 @@
-import { createDbPath, removeDBPath } from './lib/dir'
-import { getEvents, getMatches, getGames, getPlayers, getTeams, getActiveTeams, getPlayerStats, getTeamStats } from './lib/api'
+import { createDbPath, removeDBPath } from './lib/dir.js'
+import { getEvents, getMatches, getGames, getPlayers, getTeams, getActiveTeams, getPlayerStats, getTeamStats } from './lib/api.js'
 console.log('⌛ Getting all data ⌛')
 
 await removeDBPath()
