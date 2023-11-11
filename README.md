@@ -14,6 +14,9 @@ cd OctaneGG-API-Download
 npm install
 ```
 ```
+npm run build
+```
+```
 npm run start
 ```
 
