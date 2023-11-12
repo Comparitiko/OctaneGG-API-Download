@@ -81,7 +81,7 @@ export async function getGames (): Promise<void> {
   const filePath = await createDir('Games/')
     while (pageSize === 500) {
       try {
-        url = `https://zsr.octane.gg/matches?page=${page}&perPage=500`
+        url = `https://zsr.octane.gg/games?page=${page}&perPage=500`
         const data: Games = await doFetch(url)
         console.log('Page: ', page)
         pageSize = data.pageSize
