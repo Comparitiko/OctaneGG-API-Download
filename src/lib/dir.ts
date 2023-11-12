@@ -5,7 +5,7 @@ export const DB_PATH = path.join(process.cwd(), './Database/')
 
 export async function saveErrors (url: string): Promise<void> {
   try {
-    const filePath = createDir(`${DB_PATH}/Errors`)
+    const filePath = createDir('/Errors')
     appendFile(`${filePath}/Errors.txt`, `${url}\n`, {encoding: 'utf-8'})
   } catch (error) {
     console.log('Error' + error)
