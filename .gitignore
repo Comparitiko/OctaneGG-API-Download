@@ -1,4 +1,4 @@
 node_modules
 Database
 dist
-.vscode
+pnpm-lock.yaml
