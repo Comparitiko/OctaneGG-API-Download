@@ -1,11 +1,22 @@
-import { mkdir, rm } from 'node:fs/promises'
+import { mkdir, rm, appendFile } from 'node:fs/promises'
 import path from 'node:path'
 
 export const DB_PATH = path.join(process.cwd(), './Database/')
 
+export async function saveErrors (url: string): Promise<void> {
+  try {
+    const filePath = createDir(`${DB_PATH}/Errors`)
+    appendFile(`${filePath}/Errors.txt`, url, {encoding: 'utf-8'})
+  } catch (error) {
+    console.log('Error' + error)
+  }
+}
+
 // Function to replace names with dots to create dirs
 export async function fixName (name: string): Promise<string> {
-  const fixedName = name.replace('.', '')
+  const fixedName = name
+  .replace('.', '')
+  .replace('*', '')
   return fixedName
 }
 
