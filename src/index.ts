@@ -13,4 +13,4 @@ await getActiveTeams()
 await getPlayerStats()
 await getTeamStats()
 
-console.log('All data downloaded')
+console.log('✔️ All data downloaded ✔️')

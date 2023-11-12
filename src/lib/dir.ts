@@ -17,6 +17,7 @@ export async function fixName (name: string): Promise<string> {
   const fixedName = name
   .replace('.', '')
   .replace('*', '')
+  .replace('?', '')
   return fixedName
 }
 
