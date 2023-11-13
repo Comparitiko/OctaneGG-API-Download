@@ -30,7 +30,7 @@ export async function createDbPath (): Promise<void> {
 // Function to remove the DB directory
 export async function removeDBPath (): Promise<void> {
   try {
-    await rm(DB_PATH, { force: true, recursive: true })
+    await rm(DB_PATH, { force: true, recursive: true, retryDelay: 100, maxRetries: 10})
   } catch (err) {
     console.log(err)
   }
