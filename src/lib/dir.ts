@@ -14,11 +14,7 @@ export async function saveErrors (url: string): Promise<void> {
 
 // Function to replace names with dots to create dirs
 export async function fixName (name: string): Promise<string> {
-  const fixedName = name
-  .replace('.', '')
-  .replace('*', '')
-  .replace('?', '')
-  return fixedName
+  return name.replace(/[.*?]/g, '')
 }
 
 // Function to create the DB directory

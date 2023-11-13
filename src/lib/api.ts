@@ -190,20 +190,18 @@ export async function getPlayerStats (): Promise<void> {
   await createDir('PlayersStats/')
   let numPage = 0
   let pageSize = 500
-  let numPlayer = 1
   while (pageSize === 500) {
       const players = playerData[numPage].players
-      for (const player of players) {
+      for (let i = 0; i !== players.length; i++) {
         try {
-        const tag = player.tag
+        const tag = players[i].tag
         const fixedTag = await fixName(tag)
-        const id = player._id
+        const id = players[i]._id
         const filePath = await createDir(`PlayersStats/${fixedTag}/`)
         console.log(
           `Page: ${numPage + 1
-          } ------ PlayerNum:${numPlayer} ------ Player: ${fixedTag}`
+          } ------ PlayerNum:${i + 1} ------ Player: ${fixedTag}`
         )
-        numPlayer += 1
         for (const stat of stats) {
           url = `https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`
           const data: PlayerStats = await doFetch(url)
@@ -220,7 +218,6 @@ export async function getPlayerStats (): Promise<void> {
       }
       pageSize = playerData[numPage].pageSize
       numPage += 1
-      numPlayer = 1
   }
   console.log('✔️ Players stats finished ✔️')
 }
@@ -232,20 +229,18 @@ export async function getTeamStats (): Promise<void> {
   await createDir('TeamsStats/')
   let numPage = 0
   let pageSize = 500
-  let numTeam = 1
   while (pageSize === 500) {
       const teams = teamsData[numPage].teams
-      for (const team of teams) {
+      for (let i = 0; i !== teams.length; i++) {
         try {
-        const name = team.name
+        const name = teams[i].name
         const fixedName = await fixName(name)
-        const id = team._id
+        const id = teams[i]._id
         const filePath = await createDir(`TeamsStats/${fixedName}/`)
         console.log(
           `Page: ${numPage + 1
-          } ------ TeamNum:${numTeam} ------ Team: ${fixedName}`
+          } ------ TeamNum:${i + 1} ------ Team: ${fixedName}`
         )
-        numTeam += 1
         for (const stat of stats) {
           url = `https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`
           const data: TeamStats = await doFetch(url)
@@ -262,7 +257,6 @@ export async function getTeamStats (): Promise<void> {
       }
       pageSize = teamsData[numPage].pageSize
       numPage += 1
-      numTeam = 1
   }
   console.log('✔️ Teams stats finished ✔️')
 }
