@@ -204,7 +204,6 @@ export async function getPlayerStats (): Promise<void> {
           } ------ PlayerNum:${numPlayer} ------ Player: ${fixedTag}`
         )
         numPlayer += 1
-        if (numPlayer === 501) numPlayer = 1
         for (const stat of stats) {
           url = `https://zsr.octane.gg/stats/players?stat=${stat}&player=${id}`
           const data: PlayerStats = await doFetch(url)
@@ -221,6 +220,7 @@ export async function getPlayerStats (): Promise<void> {
       }
       pageSize = playerData[numPage].pageSize
       numPage += 1
+      numPlayer = 1
   }
   console.log('✔️ Players stats finished ✔️')
 }
@@ -246,7 +246,6 @@ export async function getTeamStats (): Promise<void> {
           } ------ TeamNum:${numTeam} ------ Team: ${fixedName}`
         )
         numTeam += 1
-        if (numTeam === 501) numTeam = 1
         for (const stat of stats) {
           url = `https://zsr.octane.gg/stats/teams?stat=${stat}&team=${id}`
           const data: TeamStats = await doFetch(url)
@@ -263,6 +262,7 @@ export async function getTeamStats (): Promise<void> {
       }
       pageSize = teamsData[numPage].pageSize
       numPage += 1
+      numTeam = 1
   }
   console.log('✔️ Teams stats finished ✔️')
 }
