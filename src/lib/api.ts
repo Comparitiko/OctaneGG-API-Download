@@ -185,7 +185,7 @@ export async function getActiveTeams (): Promise<void> {
 
 // Get all stats of players by their id
 export async function getPlayerStats (): Promise<void> {
-  console.log('Getting players stats')
+  console.log('📩 Getting players stats 📩')
   const playerData: Players[] = JSON.parse(await readFile(`${DB_PATH}/Players/players.json`, { encoding: 'utf-8' }))
   await createDir('PlayersStats/')
   let numPage = 0
@@ -222,12 +222,12 @@ export async function getPlayerStats (): Promise<void> {
       pageSize = playerData[numPage].pageSize
       numPage += 1
   }
-  console.log('Players stats finished')
+  console.log('✔️ Players stats finished ✔️')
 }
 
 // Get all stats of teams by their id
 export async function getTeamStats (): Promise<void> {
-  console.log('Getting teams stats')
+  console.log('📩 Getting teams stats 📩')
   const teamsData: Teams[] = JSON.parse(await readFile(`${DB_PATH}/Teams/teams.json`, { encoding: 'utf-8' }))
   await createDir('TeamsStats/')
   let numPage = 0
@@ -264,5 +264,5 @@ export async function getTeamStats (): Promise<void> {
       pageSize = teamsData[numPage].pageSize
       numPage += 1
   }
-  console.log('Teams stats finished')
+  console.log('✔️ Teams stats finished ✔️')
 }
